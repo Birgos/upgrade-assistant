@@ -35,6 +35,7 @@ namespace Microsoft.DotNet.UpgradeAssistant.Extensions.NuGet
             services.AddSingleton<IVersionComparer, NuGetVersionComparer>();
             services.AddTransient<ITargetFrameworkMonikerComparer, NuGetTargetFrameworkMonikerComparer>();
             services.AddSingleton<IUpgradeStartup, NuGetCredentialsStartup>();
+            services.AddSingleton<INuGetSettingsWrapper, NuGetSettingsWrapper>();
             services.AddSingleton<INuGetPackageSourceFactory, NuGetPackageSourceFactory>();
             services.AddSingleton(_ => Settings.LoadDefaultSettings(null));
             services.AddSingleton(_ => new SourceCacheContext { NoCache = true });

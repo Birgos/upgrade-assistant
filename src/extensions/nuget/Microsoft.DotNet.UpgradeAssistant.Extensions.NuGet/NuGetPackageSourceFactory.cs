@@ -13,22 +13,20 @@ namespace Microsoft.DotNet.UpgradeAssistant.Extensions.NuGet
         private const string DefaultPackageSource = "https://api.nuget.org/v3/index.json";
 
         private readonly ILogger<NuGetPackageSourceFactory> _logger;
+        private readonly INuGetSettingsWrapper _nuGetSettingsWrapper;
 
-        public NuGetPackageSourceFactory(ILogger<NuGetPackageSourceFactory> logger)
+        public NuGetPackageSourceFactory(ILogger<NuGetPackageSourceFactory> logger, INuGetSettingsWrapper nuGetSettingsWrapper)
         {
             _logger = logger;
+            _nuGetSettingsWrapper = nuGetSettingsWrapper;
         }
 
         public IEnumerable<PackageSource> GetPackageSources(string? path)
         {
             var packageSources = new List<PackageSource>();
-
-            if (path != null)
-            {
-                var nugetSettings = Settings.LoadDefaultSettings(path);
-                var sourceProvider = new PackageSourceProvider(nugetSettings);
-                packageSources.AddRange(sourceProvider.LoadPackageSources().Where(e => e.IsEnabled));
-            }
+            var nugetSettings = _nuGetSettingsWrapper.LoadDefaultSettings(path);
+            var sourceProvider = new PackageSourceProvider(nugetSettings);
+            packageSources.AddRange(sourceProvider.LoadPackageSources().Where(e => e.IsEnabled));
 
             if (packageSources.Count == 0)
             {
